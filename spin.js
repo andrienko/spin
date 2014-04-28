@@ -1,17 +1,25 @@
+Element.prototype.triggerAnEvent = function(eventName){
+    if (typeof document.createEvent != 'undefined'){
+        var event = document.createEvent("HTMLEvents");
+        event.initEvent(eventName, false, true);
+        this.dispatchEvent(event);
+    }
+    else this.fireEvent("on"+eventName);
+}
+
 var a_inputSpin = {
     activeSpin:null,
     lastState:null,
     init:function(){
-        var spins = Array.prototype.slice.call(document.querySelectorAll('input[type=spin]'));
-        spins.forEach(function(el){
+        Array.prototype.slice.call(document.querySelectorAll('input[type=spin]')).forEach(function(el){
             a_inputSpin.initElement(el);
         });
     },
     initElement:function(element){
         element.setAttribute('type','text');
         element.addEventListener('mousedown',this.select);
-        element.addEventListener("mousewheel", this.wheel, false);
-        element.addEventListener("DOMMouseScroll", this.wheel, false);
+        element.addEventListener('mousewheel', this.wheel, false);
+        element.addEventListener('DOMMouseScroll', this.wheel, false);
     },
     select:function(event){
         a_inputSpin.activeSpin = this;
@@ -33,6 +41,7 @@ var a_inputSpin = {
         var step = parseFloat(element.getAttribute('step'));
         var val = parseFloat(element.value);
         element.value = isNaN(val)?0:val + (isNaN(step)?5:step)*delta;
+        if(element.hasAttribute('change'))element.triggerAnEvent('change');
     },
     calculateDelta:function(event){
         if(a_inputSpin.lastState.y == event.y)return 0;
@@ -42,9 +51,6 @@ var a_inputSpin = {
     }
 };
 
-window.addEventListener('load',function(){
-    a_inputSpin.init();
-});
-
+window.addEventListener('load',function(){a_inputSpin.init();});
 window.addEventListener('mousemove',function(e){a_inputSpin.move(e);});
 window.addEventListener('mouseup',function(){a_inputSpin.deselect();});

@@ -18,6 +18,7 @@ decreased by 1 respectively.
 
 Features
 ---
- - If step is not specified - it will be equal to 5
+ - If "step" attribute of an element is not specified - it will be equal to 5
+ - If an element has "change" attribute - its 'onchange' event will be fired every change
  - Step can be float and/or negative number
  - The type="spin" changes to type="text" after script is initialized. This may change in future
